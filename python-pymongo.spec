@@ -6,12 +6,12 @@
 Summary:	Python driver for MongoDB
 Summary(pl.UTF-8):	Sterownik Pythona do MongoDB
 Name:		python-%{module}
-Version:	2.2.1
+Version:	2.3
 Release:	1
 License:	Apache v2.0
 Group:		Development/Languages/Python
 Source0:	http://pypi.python.org/packages/source/p/pymongo/%{module}-%{version}.tar.gz
-# Source0-md5:	b9e9f844208971f42862d5a205cab1c7
+# Source0-md5:	0d342ad1506f983af671d0b0e0e1efec
 URL:		http://api.mongodb.org/python/current/
 BuildRequires:	python-devel
 BuildRequires:	python-distribute
