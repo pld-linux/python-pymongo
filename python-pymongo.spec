@@ -1,5 +1,7 @@
 #
 # Conditional build:
+%bcond_without  python2         # Python 2.x module
+%bcond_without  python3         # Python 3.x module
 %bcond_with	tests	# run tests (seem broken)
 
 %define 	module	pymongo
@@ -7,14 +9,21 @@ Summary:	Python driver for MongoDB
 Summary(pl.UTF-8):	Sterownik Pythona do MongoDB
 Name:		python-%{module}
 Version:	2.6.3
-Release:	1
+Release:	2
 License:	Apache v2.0
 Group:		Development/Languages/Python
 Source0:	http://pypi.python.org/packages/source/p/pymongo/%{module}-%{version}.tar.gz
 # Source0-md5:	da4a7d6ee47fe30b3978b8805d266167
 URL:		http://api.mongodb.org/python/current/
+%if %{with python2}
 BuildRequires:	python-devel
 BuildRequires:	python-distribute
+%endif
+%if %{with python3}
+BuildRequires:	python3-2to3
+BuildRequires:	python3-devel
+BuildRequires:	python3-distribute
+%endif
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.219
 Requires:	python-libs
@@ -34,32 +43,70 @@ MongoDB z poziomu Pythona. Pakiet bson to implementacja formatu BSON
 dla Pythona. Pakiet pymongo to natywny sterownik Pythona dla MongoDB.
 Pakiet gridfs to implementacja gridfs w oparciu o pymongo.
 
+%package -n python3-%{module}
+Summary:	Python driver for MongoDB
+Summary(pl.UTF-8):	Sterownik Pythona do MongoDB
+Group:		Development/Languages/Python
+Requires:	python3-libs
+Requires:	python3-modules
+
+%description -n python3-%{module}
+The PyMongo distribution contains tools for interacting with MongoDB
+database from Python. The bson package is an implementation of the
+BSON format for Python. The pymongo package is a native Python driver
+for MongoDB. The gridfs package is a gridfs implementation on top of
+pymongo.
+
+%description -n python3-%{module} -l pl.UTF-8
+Dystrybucja PyMongo zawiera narzędzia do współpracy z bazą danych
+MongoDB z poziomu Pythona. Pakiet bson to implementacja formatu BSON
+dla Pythona. Pakiet pymongo to natywny sterownik Pythona dla MongoDB.
+Pakiet gridfs to implementacja gridfs w oparciu o pymongo.
+
+
 %prep
 %setup -q -n %{module}-%{version}
 
 %build
+%if %{with python2}
 CC="%{__cc}" \
 CFLAGS="%{rpmcflags}" \
-%{__python} setup.py build
+%{__python} setup.py build --build-base build-2 %{?with_tests:test}
+%endif
 
-%{?with_tests:%{__python} setup.py test}
+%if %{with python3}
+CC="%{__cc}" \
+CFLAGS="%{rpmcflags}" \
+%{__python3} setup.py build --build-base build-3 %{?with_tests:test}
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%{__python} setup.py install \
+
+%if %{with python2}
+%{__python} setup.py \
+	build --build-base build-2 \
+	install \
 	--skip-build \
 	--optimize=2 \
 	--root=$RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT%{_examplesdir}/%{name}-%{version}
-
-%py_ocomp $RPM_BUILD_ROOT%{py_sitedir}
-%py_comp $RPM_BUILD_ROOT%{py_sitedir}
 %py_postclean
+%endif
+
+%if %{with python3}
+%{__python3} setup.py \
+	build --build-base build-3 \
+	install \
+	--skip-build \
+	--optimize=2 \
+	--root=$RPM_BUILD_ROOT
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%if %{with python2}
 %files
 %defattr(644,root,root,755)
 %doc README.rst doc/api doc/examples doc/*.rst
@@ -72,3 +119,22 @@ rm -rf $RPM_BUILD_ROOT
 %{py_sitedir}/pymongo/*.py[co]
 %attr(755,root,root) %{py_sitedir}/pymongo/_cmessage.so
 %{py_sitedir}/pymongo-%{version}-py*.egg-info
+%endif
+
+%if %{with python3}
+%files -n python3-%{module}
+%defattr(644,root,root,755)
+%doc README.rst doc/api doc/examples doc/*.rst
+%dir %{py3_sitedir}/bson
+%{py3_sitedir}/bson/*.py
+%{py3_sitedir}/bson/__pycache__
+%attr(755,root,root) %{py3_sitedir}/bson/_cbson.*.so
+%dir %{py3_sitedir}/gridfs
+%{py3_sitedir}/gridfs/*.py
+%{py3_sitedir}/gridfs/__pycache__
+%dir %{py3_sitedir}/pymongo
+%{py3_sitedir}/pymongo/*.py
+%{py3_sitedir}/pymongo/__pycache__
+%attr(755,root,root) %{py3_sitedir}/pymongo/_cmessage.*.so
+%{py3_sitedir}/pymongo-%{version}-py*.egg-info
+%endif
