@@ -16,12 +16,12 @@ Source0:	https://pypi.python.org/packages/source/p/pymongo/pymongo-%{version}.ta
 # Source0-md5:	4e4c75e5362f422edb47d27ea6d17a96
 URL:		http://api.mongodb.org/python/current/
 %if %{with python2}
-BuildRequires:	python-devel >= 2.4
+BuildRequires:	python-devel >= 1:2.4
 BuildRequires:	python-distribute
 %endif
 %if %{with python3}
-BuildRequires:	python3-2to3 >= 3.2
-BuildRequires:	python3-devel >= 3.2
+BuildRequires:	python3-2to3 >= 1:3.2
+BuildRequires:	python3-devel >= 1:3.2
 BuildRequires:	python3-distribute
 %endif
 BuildRequires:	rpm-pythonprov
