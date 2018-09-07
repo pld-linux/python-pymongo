@@ -42,6 +42,7 @@ MongoDB z poziomu Pythona.
 %package -n python-bson
 Summary:	Python bson library
 Group:		Development/Languages/Python
+Conflicts:	python-pymongo < 3.7.1
 
 %description -n python-bson
 BSON is a binary-encoded serialization of JSON-like documents. BSON is
@@ -52,6 +53,7 @@ objects and arrays.
 %package -n python-gridfs
 Summary:	Python GridFS driver for MongoDB
 Requires:	python-pymongo = %{version}-%{release}
+Conflicts:	python-pymongo < 3.7.1
 
 %description -n python-gridfs
 GridFS is a storage specification for large objects in MongoDB.
@@ -62,10 +64,12 @@ Summary(pl.UTF-8):	Sterownik Pythona do MongoDB
 Group:		Development/Languages/Python
 Requires:	python3-bson = %{version}-%{release}
 Requires:	python3-modules
+Conflicts:	python3-pymongo < 3.7.1
 
 %package -n python3-bson
 Summary:	Python bson library
 Group:		Development/Languages/Python
+Conflicts:	python3-pymongo < 3.7.1
 
 %description -n python3-bson
 BSON is a binary-encoded serialization of JSON-like documents. BSON is
