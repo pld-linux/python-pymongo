@@ -8,60 +8,87 @@
 Summary:	Python driver for MongoDB
 Summary(pl.UTF-8):	Sterownik Pythona do MongoDB
 Name:		python-%{module}
-Version:	2.7.1
-Release:	6
+Version:	3.7.1
+Release:	1
 License:	Apache v2.0
 Group:		Development/Languages/Python
 Source0:	https://pypi.python.org/packages/source/p/pymongo/pymongo-%{version}.tar.gz
-# Source0-md5:	4e4c75e5362f422edb47d27ea6d17a96
-URL:		http://api.mongodb.org/python/current/
+# Source0-md5:	7449c81a6c32c3c8cb9bebebc848fded
+URL:		https://api.mongodb.com/python/current/
 %if %{with python2}
 BuildRequires:	python-devel >= 1:2.4
-BuildRequires:	python-distribute
+BuildRequires:	python-modules
+BuildRequires:	python-setuptools
 %endif
 %if %{with python3}
 BuildRequires:	python3-2to3 >= 1:3.2
 BuildRequires:	python3-devel >= 1:3.2
-BuildRequires:	python3-distribute
+BuildRequires:	python3-setuptools
 %endif
 BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.710
-Requires:	python-libs
+Requires:	python-bson = %{version}-%{release}
 Requires:	python-modules
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
 The PyMongo distribution contains tools for interacting with MongoDB
-database from Python. The bson package is an implementation of the
-BSON format for Python. The pymongo package is a native Python driver
-for MongoDB. The gridfs package is a gridfs implementation on top of
-pymongo.
+database from Python.
 
 %description -l pl.UTF-8
 Dystrybucja PyMongo zawiera narzędzia do współpracy z bazą danych
-MongoDB z poziomu Pythona. Pakiet bson to implementacja formatu BSON
-dla Pythona. Pakiet pymongo to natywny sterownik Pythona dla MongoDB.
-Pakiet gridfs to implementacja gridfs w oparciu o pymongo.
+MongoDB z poziomu Pythona.
+
+%package -n python-bson
+Summary:	Python bson library
+Group:		Development/Languages/Python
+
+%description -n python-bson
+BSON is a binary-encoded serialization of JSON-like documents. BSON is
+designed to be lightweight, traversable, and efficient. BSON, like
+JSON, supports the embedding of objects and arrays within other
+objects and arrays.
+
+%package -n python-gridfs
+Summary:	Python GridFS driver for MongoDB
+Requires:	python-pymongo = %{version}-%{release}
+
+%description -n python-gridfs
+GridFS is a storage specification for large objects in MongoDB.
 
 %package -n python3-%{module}
 Summary:	Python driver for MongoDB
 Summary(pl.UTF-8):	Sterownik Pythona do MongoDB
 Group:		Development/Languages/Python
-Requires:	python3-libs
+Requires:	python3-bson = %{version}-%{release}
 Requires:	python3-modules
+
+%package -n python3-bson
+Summary:	Python bson library
+Group:		Development/Languages/Python
+
+%description -n python3-bson
+BSON is a binary-encoded serialization of JSON-like documents. BSON is
+designed to be lightweight, traversable, and efficient. BSON, like
+JSON, supports the embedding of objects and arrays within other
+objects and arrays. This package contains the python3 version of this
+module.
+
+%package -n python3-gridfs
+Summary:	Python GridFS driver for MongoDB
+Requires:	python-pymongo = %{version}-%{release}
+
+%description -n python3-gridfs
+GridFS is a storage specification for large objects in MongoDB. This
+package contains the python3 version of this module.
 
 %description -n python3-%{module}
 The PyMongo distribution contains tools for interacting with MongoDB
-database from Python. The bson package is an implementation of the
-BSON format for Python. The pymongo package is a native Python driver
-for MongoDB. The gridfs package is a gridfs implementation on top of
-pymongo.
+database from Python.
 
 %description -n python3-%{module} -l pl.UTF-8
 Dystrybucja PyMongo zawiera narzędzia do współpracy z bazą danych
-MongoDB z poziomu Pythona. Pakiet bson to implementacja formatu BSON
-dla Pythona. Pakiet pymongo to natywny sterownik Pythona dla MongoDB.
-Pakiet gridfs to implementacja gridfs w oparciu o pymongo.
+MongoDB z poziomu Pythona.
 
 %prep
 %setup -q -n %{module}-%{version}
@@ -95,31 +122,43 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc README.rst doc/api doc/examples doc/*.rst
-%dir %{py_sitedir}/bson
-%{py_sitedir}/bson/*.py[co]
-%attr(755,root,root) %{py_sitedir}/bson/_cbson.so
-%dir %{py_sitedir}/gridfs
-%{py_sitedir}/gridfs/*.py[co]
 %dir %{py_sitedir}/pymongo
 %{py_sitedir}/pymongo/*.py[co]
 %attr(755,root,root) %{py_sitedir}/pymongo/_cmessage.so
 %{py_sitedir}/pymongo-%{version}-py*.egg-info
+
+%files -n python-bson
+%defattr(644,root,root,755)
+%dir %{py_sitedir}/bson
+%{py_sitedir}/bson/*.py[co]
+%attr(755,root,root) %{py_sitedir}/bson/_cbson.so
+
+%files -n python-gridfs
+%defattr(644,root,root,755)
+%dir %{py_sitedir}/gridfs
+%{py_sitedir}/gridfs/*.py[co]
 %endif
 
 %if %{with python3}
 %files -n python3-%{module}
 %defattr(644,root,root,755)
 %doc README.rst doc/api doc/examples doc/*.rst
-%dir %{py3_sitedir}/bson
-%{py3_sitedir}/bson/*.py
-%{py3_sitedir}/bson/__pycache__
-%attr(755,root,root) %{py3_sitedir}/bson/_cbson.*.so
-%dir %{py3_sitedir}/gridfs
-%{py3_sitedir}/gridfs/*.py
-%{py3_sitedir}/gridfs/__pycache__
 %dir %{py3_sitedir}/pymongo
 %{py3_sitedir}/pymongo/*.py
 %{py3_sitedir}/pymongo/__pycache__
 %attr(755,root,root) %{py3_sitedir}/pymongo/_cmessage.*.so
 %{py3_sitedir}/pymongo-%{version}-py*.egg-info
+
+%files -n python3-bson
+%defattr(644,root,root,755)
+%dir %{py3_sitedir}/bson
+%{py3_sitedir}/bson/*.py
+%{py3_sitedir}/bson/__pycache__
+%attr(755,root,root) %{py3_sitedir}/bson/_cbson.*.so
+
+%files -n python3-gridfs
+%defattr(644,root,root,755)
+%dir %{py3_sitedir}/gridfs
+%{py3_sitedir}/gridfs/*.py
+%{py3_sitedir}/gridfs/__pycache__
 %endif
