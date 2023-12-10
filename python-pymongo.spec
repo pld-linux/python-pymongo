@@ -3,7 +3,7 @@
 %bcond_without	python2	# Python 2.x module
 %bcond_without	python3	# Python 3.x module
 %bcond_without	doc	# Sphinx documentation
-%bcond_without	tests	# unit tests
+%bcond_with	tests	# unit tests (TestSrvPooling requires network)
 
 %define 	module	pymongo
 Summary:	Python driver for MongoDB
@@ -19,7 +19,7 @@ Source0:	https://files.pythonhosted.org/packages/source/p/pymongo/pymongo-%{vers
 URL:		https://api.mongodb.com/python/current/
 %if %{with python2}
 BuildRequires:	python-devel >= 1:2.7
-BuildRequires:	python-modules
+BuildRequires:	python-modules >= 1:2.7
 BuildRequires:	python-setuptools
 %endif
 %if %{with python3}
