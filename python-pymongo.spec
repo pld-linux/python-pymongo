@@ -11,7 +11,7 @@ Summary(pl.UTF-8):	Sterownik Pythona do MongoDB
 Name:		python-%{module}
 # keep 3.x here for python2 support
 Version:	3.13.0
-Release:	1
+Release:	2
 License:	Apache v2.0
 Group:		Development/Languages/Python
 Source0:	https://files.pythonhosted.org/packages/source/p/pymongo/pymongo-%{version}.tar.gz
